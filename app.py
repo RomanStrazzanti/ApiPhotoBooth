@@ -51,9 +51,9 @@ class Video(db.Model):
 class Galerie(db.Model):
     __tablename__ = 'galerie'
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(2000), nullable=False)
+    url = db.Column(db.String(250), nullable=False)
 
-    @app.route('/galerie', methods=['GET'])
+@app.route('/galerie', methods=['GET'])
 @jwt_required()
 def get_galerie():
     galerie_list = Galerie.query.all()
