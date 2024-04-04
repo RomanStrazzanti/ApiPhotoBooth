@@ -48,6 +48,11 @@ class Galerie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(250), nullable=False)
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({"message": "Bienvenue sur l'API de Photo Booth"})
+
+
 @app.route('/galerie', methods=['GET'])
 def get_galerie():
     galerie_list = Galerie.query.all()
