@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
+import os
 
 app = Flask(__name__)
 # Remplace par tes informations de connexion à la base de données
@@ -47,6 +48,19 @@ class Video(db.Model):
     evenement_id = db.Column(db.Integer, db.ForeignKey('evenement.id'), nullable=False)
     evenement = db.relationship('Evenement', backref=db.backref('videos', lazy=True))
 
+class Galerie(db.Model):
+    __tablename__ = 'galerie'
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String(2000), nullable=False)
+
+    @app.route('/galerie', methods=['GET'])
+@jwt_required()
+def get_galerie():
+    galerie_list = Galerie.query.all()
+    return jsonify([{'id': g.id, 'url': g.url} for g in galerie_list])
+
+
+
 @app.route('/login', methods=['POST'])
 def login():
     username = request.json.get('username', None)
@@ -80,4 +94,5 @@ def get_videos():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))  # Utiliser le port définit par l'environnement, 5000 par défaut
+    app.run(host='0.0.0.0', port=port, debug=False)  # Il est recommandé de désactiver le mode debug pour le déploiement
